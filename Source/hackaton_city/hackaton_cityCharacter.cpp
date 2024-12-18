@@ -8,6 +8,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HackatonCityDeveloperSettings.h"
 #include "InputActionValue.h"
 #include "WaveFunctionCollapseModel.h"
 #include "Engine/LocalPlayer.h"

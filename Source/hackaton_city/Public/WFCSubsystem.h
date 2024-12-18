@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WFCSettings")
 	TMap<FIntVector, FWaveFunctionCollapseOption> StarterOptions;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WFCSettings")
+	TMap<FVector, AActor*> SpawnedActors{};
+
 	/**
 	* Solve a grid using a WFC model.  If successful, spawn an actor.
 	* @param TryCount Amount of times to attempt a successful solve
@@ -104,8 +107,8 @@ public:
 	*   -Orientation is determined by the yaw of the first transform in the array
 	* @param Transforms Array of transforms (by ref)
 	*/
-	UFUNCTION(BlueprintCallable, Category = "WFCFunctions")
-	void DeriveGridFromTransformBounds(const TArray<FTransform>& Transforms);
+	//UFUNCTION(BlueprintCallable, Category = "WFCFunctions")
+	//void DeriveGridFromTransformBounds(const TArray<FTransform>& Transforms);
 
 	/**
 	* Derive grid from an array of transforms
@@ -115,8 +118,8 @@ public:
 	*   -Orientation is determined by the yaw of the first transform in the array
 	* @param Transforms Array of transforms (by ref)
 	*/
-	UFUNCTION(BlueprintCallable, Category = "WFCFunctions")
-	void DeriveGridFromTransforms(const TArray<FTransform>& Transforms);
+	//UFUNCTION(BlueprintCallable, Category = "WFCFunctions")
+	//void DeriveGridFromTransforms(const TArray<FTransform>& Transforms);
 
 private:
 

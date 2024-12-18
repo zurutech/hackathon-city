@@ -3,6 +3,8 @@
 #include "hackaton_cityGameMode.h"
 #include "hackaton_cityCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "WaveFunctionCollapseModel.h"
+#include "Public/WFCSubsystem.h"
 
 Ahackaton_cityGameMode::Ahackaton_cityGameMode()
 	: Super()

@@ -9,7 +9,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "WaveFunctionCollapseModel.h"
 #include "Engine/LocalPlayer.h"
+#include "Public/WFCSubsystem.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -59,7 +61,7 @@ void Ahackaton_cityCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &Ahackaton_cityCharacter::GenerateCity);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
@@ -77,6 +79,8 @@ void Ahackaton_cityCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 void Ahackaton_cityCharacter::Move(const FInputActionValue& Value)
 {
+	
+	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -97,6 +101,24 @@ void Ahackaton_cityCharacter::Look(const FInputActionValue& Value)
 	{
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerPitchInput(LookAxisVector.Y);		
 	}
+
+}
+
+void Ahackaton_cityCharacter::GenerateCity(const FInputActionValue& Value)
+{
+	Super::Jump();
+
+	const auto forward = GetActorForwardVector();
+	const auto location = GetActorLocation();
+	const auto cityLocation = location + forward * 100000;
+
+	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
+	UWaveFunctionCollapseModel* wfcModel = LoadObject<UWaveFunctionCollapseModel>(nullptr, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
+	wfcSubsystem->WFCModel = wfcModel;
+	wfcSubsystem->OriginLocation = cityLocation;
+	wfcSubsystem->Resolution = FIntVector(2, 2, 2);
+	wfcSubsystem->Collapse(10, 0);
+	
 }

@@ -82,22 +82,21 @@ void Ahackaton_cityCharacter::BeginPlay()
 
 	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
 	wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(nullptr, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
-	wfcSubsystem->Resolution = FIntVector(2, 2, 2);
+	wfcSubsystem->Resolution = FIntVector(5, 5, 1);
 }
 
 
 void Ahackaton_cityCharacter::Move(const FInputActionValue& Value)
 {
-	
-	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
-
+	constexpr float SPEED = 10;
+	
 	if (Controller != nullptr)
 	{
 		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y * SPEED);
+		AddMovementInput(GetActorRightVector(), MovementVector.X * SPEED);
 	}
 }
 

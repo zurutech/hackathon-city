@@ -5,13 +5,14 @@
 #include "Components/SphereComponent.h"
 #include "Public/WFCSubsystem.h"
 
-Ahackaton_cityProjectile::Ahackaton_cityProjectile() 
+Ahackaton_cityProjectile::Ahackaton_cityProjectile()
 {
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(5.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComp->OnComponentHit.AddDynamic(this, &Ahackaton_cityProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	CollisionComp->OnComponentHit.AddDynamic(this, &Ahackaton_cityProjectile::OnHit);
+	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
 	CollisionComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -32,19 +33,21 @@ Ahackaton_cityProjectile::Ahackaton_cityProjectile()
 	InitialLifeSpan = 3.0f;
 }
 
-void Ahackaton_cityProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void Ahackaton_cityProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                     FVector NormalImpulse, const FHitResult& Hit)
 {
 	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
 	const TWeakObjectPtr model = wfcSubsystem->WFCModel.Get();
 	const auto tileSize = model->TileSize;
-	FVector buildingLocation{};
-	buildingLocation.X = FMath::FloorToFloat(Hit.Location.X / tileSize) * tileSize;
-	buildingLocation.Y = FMath::FloorToFloat(Hit.Location.Y / tileSize) * tileSize;
-	buildingLocation.Z = FMath::FloorToFloat(Hit.Location.Z / tileSize) * tileSize;
-	
+	const FVector buildingLocation{
+		FMath::FloorToFloat(Hit.Location.X / tileSize) * tileSize,
+		FMath::FloorToFloat(Hit.Location.Y / tileSize) * tileSize,
+		FMath::FloorToFloat(Hit.Location.Z / tileSize) * tileSize
+	};
+
 	wfcSubsystem->OriginLocation = buildingLocation;
 	wfcSubsystem->Collapse(10, 0);
-	
+
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{

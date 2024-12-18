@@ -48,6 +48,8 @@ void Ahackaton_cityProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 	wfcSubsystem->OriginLocation = buildingLocation;
 	wfcSubsystem->Collapse(10, 0);
 
+	Destroy();
+	
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{

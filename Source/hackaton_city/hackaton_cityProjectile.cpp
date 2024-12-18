@@ -35,7 +35,14 @@ Ahackaton_cityProjectile::Ahackaton_cityProjectile()
 void Ahackaton_cityProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
-	wfcSubsystem->OriginLocation = Hit.Location;
+	const TWeakObjectPtr model = wfcSubsystem->WFCModel.Get();
+	const auto tileSize = model->TileSize;
+	FVector buildingLocation{};
+	buildingLocation.X = FMath::FloorToFloat(Hit.Location.X / tileSize) * tileSize;
+	buildingLocation.Y = FMath::FloorToFloat(Hit.Location.Y / tileSize) * tileSize;
+	buildingLocation.Z = FMath::FloorToFloat(Hit.Location.Z / tileSize) * tileSize;
+	
+	wfcSubsystem->OriginLocation = buildingLocation;
 	wfcSubsystem->Collapse(10, 0);
 	
 	// Only add impulse and destroy projectile if we hit a physics

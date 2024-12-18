@@ -5,7 +5,6 @@
 #include "Engine/StaticMesh.h"
 #include "WaveFunctionCollapseBPLibrary.h"
 #include "Components/InstancedStaticMeshComponent.h"
-#include "Subsystems/EditorActorSubsystem.h"
 #include "Kismet2/ComponentEditorUtils.h"
 #include "Editor.h"
 
@@ -153,7 +152,8 @@ void UWFCSubsystem::InitializeWFC(TArray<FWaveFunctionCollapseTile>& Tiles, TArr
 				}
 			}
 		}
-		StarterOptions.Empty();
+		// Keep the same starting options for the next run
+		// StarterOptions.Empty();
 	}
 	else
 	{
@@ -673,177 +673,177 @@ bool UWFCSubsystem::AreAllTilesNonSpawnable(const TArray<FWaveFunctionCollapseTi
 	return bAllTilesAreNonSpawnable;
 }
 
-void UWFCSubsystem::DeriveGridFromTransformBounds(const TArray<FTransform>& Transforms)
-{
-	if (Transforms.IsEmpty())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Empty Transform Array."));
-		return;
-	}
+// void UWFCSubsystem::DeriveGridFromTransformBounds(const TArray<FTransform>& Transforms)
+// {
+// 	if (Transforms.IsEmpty())
+// 	{
+// 		UE_LOG(LogTemp, Error, TEXT("Empty Transform Array."));
+// 		return;
+// 	}
+//
+// 	FVector TransformPivot;
+// 	FVector AxisAlignedPoint = FVector::ZeroVector;
+// 	FVector MinBound = FVector::ZeroVector;
+// 	FVector MaxBound = FVector::ZeroVector;
+// 	TMap<FIntVector, int32> PositionToPointCount;
+// 	float TransformOrientation = Transforms[0].GetRotation().Rotator().Yaw;
+//
+// 	float CosOrientation = FMath::Cos(PI / (180.f) * -TransformOrientation);
+// 	float SinOrientation = FMath::Sin(PI / (180.f) * -TransformOrientation);
+// 	float UnitScale = 1.0f;
+//
+// 	for (int32 index = 0; index < Transforms.Num(); index++)
+// 	{
+// 		if (index == 0)
+// 		{
+// 			TransformPivot = Transforms[index].GetLocation() * UnitScale;
+// 		}
+// 		else
+// 		{
+// 			FVector OffsetPoint = Transforms[index].GetLocation() * UnitScale - TransformPivot;
+// 			AxisAlignedPoint.X = (OffsetPoint.X * CosOrientation) - (OffsetPoint.Y * SinOrientation);
+// 			AxisAlignedPoint.Y = (OffsetPoint.X * SinOrientation) + (OffsetPoint.Y * CosOrientation);
+// 			AxisAlignedPoint.Z = OffsetPoint.Z;
+// 			MinBound.X = FMath::Min(AxisAlignedPoint.X, MinBound.X);
+// 			MinBound.Y = FMath::Min(AxisAlignedPoint.Y, MinBound.Y);
+// 			MinBound.Z = FMath::Min(AxisAlignedPoint.Z, MinBound.Z);
+// 			MaxBound.X = FMath::Max(AxisAlignedPoint.X, MaxBound.X);
+// 			MaxBound.Y = FMath::Max(AxisAlignedPoint.Y, MaxBound.Y);
+// 			MaxBound.Z = FMath::Max(AxisAlignedPoint.Z, MaxBound.Z);
+// 		}
+// 		
+// 		FIntVector PointPosition;
+// 		PointPosition.X = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.X / WFCModel->TileSize);
+// 		PointPosition.Y = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Y / WFCModel->TileSize);
+// 		PointPosition.Z = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Z / WFCModel->TileSize);
+// 		if (int32* PointCount = PositionToPointCount.Find(PointPosition))
+// 		{
+// 			PositionToPointCount.Add(PointPosition, *PointCount + 1);
+// 		}
+// 		else
+// 		{
+// 			PositionToPointCount.Add(PointPosition, 1);
+// 		}
+// 	}
+//
+// 	// Set WFC Resolution
+// 	Resolution.X = (int32)FMath::RoundHalfFromZero(MaxBound.X / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize) + 1;
+// 	Resolution.Y = (int32)FMath::RoundHalfFromZero(MaxBound.Y / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize) + 1;
+// 	Resolution.Z = (int32)FMath::RoundHalfFromZero(MaxBound.Z / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize) + 1;
+//
+// 	// Set WFC OriginLocation
+// 	FVector ReorientedMinPoint;
+// 	ReorientedMinPoint.X = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * CosOrientation) - ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * -SinOrientation);
+// 	ReorientedMinPoint.Y = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * -SinOrientation) + ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * CosOrientation);
+// 	ReorientedMinPoint.Z = MinBound.Z - (WFCModel->TileSize * 0.5f);
+// 	OriginLocation = ReorientedMinPoint + TransformPivot;
+//
+// 	// Set WFC Orientation
+// 	Orientation = FRotator(0, TransformOrientation, 0);
+//
+// 	// Set WFC Starter Options
+// 	FIntVector PositionOffset;
+// 	PositionOffset.X = (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize);
+// 	PositionOffset.Y = (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize);
+// 	PositionOffset.Z = (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize);
+// 	StarterOptions.Empty();
+// 	for (int32 z = 0;z < Resolution.Z; z++)
+// 	{
+// 		for (int32 y = 0;y < Resolution.Y; y++)
+// 		{
+// 			for (int32 x = 0;x < Resolution.X; x++)
+// 			{
+// 				if (!PositionToPointCount.Contains(FIntVector(x + PositionOffset.X, y + PositionOffset.Y, z + PositionOffset.Z)))
+// 				{
+// 					StarterOptions.Add(FIntVector(x,y,z), FWaveFunctionCollapseOption::EmptyOption);
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
-	FVector TransformPivot;
-	FVector AxisAlignedPoint = FVector::ZeroVector;
-	FVector MinBound = FVector::ZeroVector;
-	FVector MaxBound = FVector::ZeroVector;
-	TMap<FIntVector, int32> PositionToPointCount;
-	float TransformOrientation = Transforms[0].GetRotation().Rotator().Yaw;
-
-	float CosOrientation = FMath::Cos(PI / (180.f) * -TransformOrientation);
-	float SinOrientation = FMath::Sin(PI / (180.f) * -TransformOrientation);
-	float UnitScale = 1.0f;
-
-	for (int32 index = 0; index < Transforms.Num(); index++)
-	{
-		if (index == 0)
-		{
-			TransformPivot = Transforms[index].GetLocation() * UnitScale;
-		}
-		else
-		{
-			FVector OffsetPoint = Transforms[index].GetLocation() * UnitScale - TransformPivot;
-			AxisAlignedPoint.X = (OffsetPoint.X * CosOrientation) - (OffsetPoint.Y * SinOrientation);
-			AxisAlignedPoint.Y = (OffsetPoint.X * SinOrientation) + (OffsetPoint.Y * CosOrientation);
-			AxisAlignedPoint.Z = OffsetPoint.Z;
-			MinBound.X = FMath::Min(AxisAlignedPoint.X, MinBound.X);
-			MinBound.Y = FMath::Min(AxisAlignedPoint.Y, MinBound.Y);
-			MinBound.Z = FMath::Min(AxisAlignedPoint.Z, MinBound.Z);
-			MaxBound.X = FMath::Max(AxisAlignedPoint.X, MaxBound.X);
-			MaxBound.Y = FMath::Max(AxisAlignedPoint.Y, MaxBound.Y);
-			MaxBound.Z = FMath::Max(AxisAlignedPoint.Z, MaxBound.Z);
-		}
-		
-		FIntVector PointPosition;
-		PointPosition.X = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.X / WFCModel->TileSize);
-		PointPosition.Y = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Y / WFCModel->TileSize);
-		PointPosition.Z = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Z / WFCModel->TileSize);
-		if (int32* PointCount = PositionToPointCount.Find(PointPosition))
-		{
-			PositionToPointCount.Add(PointPosition, *PointCount + 1);
-		}
-		else
-		{
-			PositionToPointCount.Add(PointPosition, 1);
-		}
-	}
-
-	// Set WFC Resolution
-	Resolution.X = (int32)FMath::RoundHalfFromZero(MaxBound.X / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize) + 1;
-	Resolution.Y = (int32)FMath::RoundHalfFromZero(MaxBound.Y / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize) + 1;
-	Resolution.Z = (int32)FMath::RoundHalfFromZero(MaxBound.Z / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize) + 1;
-
-	// Set WFC OriginLocation
-	FVector ReorientedMinPoint;
-	ReorientedMinPoint.X = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * CosOrientation) - ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * -SinOrientation);
-	ReorientedMinPoint.Y = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * -SinOrientation) + ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * CosOrientation);
-	ReorientedMinPoint.Z = MinBound.Z - (WFCModel->TileSize * 0.5f);
-	OriginLocation = ReorientedMinPoint + TransformPivot;
-
-	// Set WFC Orientation
-	Orientation = FRotator(0, TransformOrientation, 0);
-
-	// Set WFC Starter Options
-	FIntVector PositionOffset;
-	PositionOffset.X = (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize);
-	PositionOffset.Y = (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize);
-	PositionOffset.Z = (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize);
-	StarterOptions.Empty();
-	for (int32 z = 0;z < Resolution.Z; z++)
-	{
-		for (int32 y = 0;y < Resolution.Y; y++)
-		{
-			for (int32 x = 0;x < Resolution.X; x++)
-			{
-				if (!PositionToPointCount.Contains(FIntVector(x + PositionOffset.X, y + PositionOffset.Y, z + PositionOffset.Z)))
-				{
-					StarterOptions.Add(FIntVector(x,y,z), FWaveFunctionCollapseOption::EmptyOption);
-				}
-			}
-		}
-	}
-}
-
-void UWFCSubsystem::DeriveGridFromTransforms(const TArray<FTransform>& Transforms)
-{
-	if (Transforms.IsEmpty())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Empty Transform Array."));
-		return;
-	}
-
-	FVector TransformPivot;
-	FVector AxisAlignedPoint = FVector::ZeroVector;
-	FVector MinBound = FVector::ZeroVector;
-	FVector MaxBound = FVector::ZeroVector;
-	TArray<FIntVector> PointPositions;
-	float TransformOrientation = Transforms[0].GetRotation().Rotator().Yaw;
-
-	float CosOrientation = FMath::Cos(PI / (180.f) * -TransformOrientation);
-	float SinOrientation = FMath::Sin(PI / (180.f) * -TransformOrientation);
-	float UnitScale = 1.0f;
-	
-	for (int32 index = 0; index < Transforms.Num(); index++)
-	{
-		if (index == 0)
-		{
-			TransformPivot = (Transforms[index].GetLocation() * UnitScale);
-		}
-		else
-		{
-			FVector LocalPoint = Transforms[index].GetLocation() * UnitScale - TransformPivot;
-			AxisAlignedPoint.X = (LocalPoint.X * CosOrientation) - (LocalPoint.Y * SinOrientation);
-			AxisAlignedPoint.Y = (LocalPoint.X * SinOrientation) + (LocalPoint.Y * CosOrientation);
-			AxisAlignedPoint.Z = LocalPoint.Z;
-			MinBound.X = FMath::Min(AxisAlignedPoint.X, MinBound.X);
-			MinBound.Y = FMath::Min(AxisAlignedPoint.Y, MinBound.Y);
-			MinBound.Z = FMath::Min(AxisAlignedPoint.Z, MinBound.Z);
-			MaxBound.X = FMath::Max(AxisAlignedPoint.X, MaxBound.X);
-			MaxBound.Y = FMath::Max(AxisAlignedPoint.Y, MaxBound.Y);
-			MaxBound.Z = FMath::Max(AxisAlignedPoint.Z, MaxBound.Z);
-		}
-		
-		FIntVector PointPosition;
-		PointPosition.X = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.X / WFCModel->TileSize);
-		PointPosition.Y = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Y / WFCModel->TileSize);
-		PointPosition.Z = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Z / WFCModel->TileSize);
-		PointPositions.AddUnique(PointPosition);
-	}
-
-	// Set WFC Resolution
-	Resolution.X = (int32)FMath::RoundHalfFromZero(MaxBound.X / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize) + 1;
-	Resolution.Y = (int32)FMath::RoundHalfFromZero(MaxBound.Y / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize) + 1;
-	Resolution.Z = (int32)FMath::RoundHalfFromZero(MaxBound.Z / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize) + 1;
-
-	// Set WFC OriginLocation
-	FVector ReorientedMinPoint;
-	ReorientedMinPoint.X = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * CosOrientation) - ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * -SinOrientation);
-	ReorientedMinPoint.Y = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * -SinOrientation) + ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * CosOrientation);
-	ReorientedMinPoint.Z = MinBound.Z - (WFCModel->TileSize * 0.5f);
-	OriginLocation = ReorientedMinPoint + TransformPivot;
-	
-	// Set WFC Orientation
-	Orientation = FRotator(0, TransformOrientation, 0);
-
-	// Set WFC Starter Options
-	FIntVector PositionOffset;
-	PositionOffset.X = (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize);
-	PositionOffset.Y = (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize);
-	PositionOffset.Z = (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize);
-	StarterOptions.Empty();
-	for (int32 z = 0;z < Resolution.Z; z++)
-	{
-		for (int32 y = 0;y < Resolution.Y; y++)
-		{
-			for (int32 x = 0;x < Resolution.X; x++)
-			{
-				if (!PointPositions.Contains(FIntVector(x + PositionOffset.X, y + PositionOffset.Y, z + PositionOffset.Z)))
-				{
-					StarterOptions.Add(FIntVector(x, y, z), FWaveFunctionCollapseOption::EmptyOption);
-				}
-			}
-		}
-	}
-	for (TPair<FIntVector,FWaveFunctionCollapseOption> StarterOption : StarterOptions)
-	{
-		UE_LOG(LogTemp, Display, TEXT("StartOption at: %d,%d,%d"), StarterOption.Key.X, StarterOption.Key.Y, StarterOption.Key.Z);
-	}
-}
+// void UWFCSubsystem::DeriveGridFromTransforms(const TArray<FTransform>& Transforms)
+// {
+// 	if (Transforms.IsEmpty())
+// 	{
+// 		UE_LOG(LogTemp, Error, TEXT("Empty Transform Array."));
+// 		return;
+// 	}
+//
+// 	FVector TransformPivot;
+// 	FVector AxisAlignedPoint = FVector::ZeroVector;
+// 	FVector MinBound = FVector::ZeroVector;
+// 	FVector MaxBound = FVector::ZeroVector;
+// 	TArray<FIntVector> PointPositions;
+// 	float TransformOrientation = Transforms[0].GetRotation().Rotator().Yaw;
+//
+// 	float CosOrientation = FMath::Cos(PI / (180.f) * -TransformOrientation);
+// 	float SinOrientation = FMath::Sin(PI / (180.f) * -TransformOrientation);
+// 	float UnitScale = 1.0f;
+// 	
+// 	for (int32 index = 0; index < Transforms.Num(); index++)
+// 	{
+// 		if (index == 0)
+// 		{
+// 			TransformPivot = (Transforms[index].GetLocation() * UnitScale);
+// 		}
+// 		else
+// 		{
+// 			FVector LocalPoint = Transforms[index].GetLocation() * UnitScale - TransformPivot;
+// 			AxisAlignedPoint.X = (LocalPoint.X * CosOrientation) - (LocalPoint.Y * SinOrientation);
+// 			AxisAlignedPoint.Y = (LocalPoint.X * SinOrientation) + (LocalPoint.Y * CosOrientation);
+// 			AxisAlignedPoint.Z = LocalPoint.Z;
+// 			MinBound.X = FMath::Min(AxisAlignedPoint.X, MinBound.X);
+// 			MinBound.Y = FMath::Min(AxisAlignedPoint.Y, MinBound.Y);
+// 			MinBound.Z = FMath::Min(AxisAlignedPoint.Z, MinBound.Z);
+// 			MaxBound.X = FMath::Max(AxisAlignedPoint.X, MaxBound.X);
+// 			MaxBound.Y = FMath::Max(AxisAlignedPoint.Y, MaxBound.Y);
+// 			MaxBound.Z = FMath::Max(AxisAlignedPoint.Z, MaxBound.Z);
+// 		}
+// 		
+// 		FIntVector PointPosition;
+// 		PointPosition.X = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.X / WFCModel->TileSize);
+// 		PointPosition.Y = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Y / WFCModel->TileSize);
+// 		PointPosition.Z = (int32)FMath::RoundHalfFromZero(AxisAlignedPoint.Z / WFCModel->TileSize);
+// 		PointPositions.AddUnique(PointPosition);
+// 	}
+//
+// 	// Set WFC Resolution
+// 	Resolution.X = (int32)FMath::RoundHalfFromZero(MaxBound.X / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize) + 1;
+// 	Resolution.Y = (int32)FMath::RoundHalfFromZero(MaxBound.Y / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize) + 1;
+// 	Resolution.Z = (int32)FMath::RoundHalfFromZero(MaxBound.Z / WFCModel->TileSize) - (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize) + 1;
+//
+// 	// Set WFC OriginLocation
+// 	FVector ReorientedMinPoint;
+// 	ReorientedMinPoint.X = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * CosOrientation) - ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * -SinOrientation);
+// 	ReorientedMinPoint.Y = ((MinBound.X - (WFCModel->TileSize * 0.5f)) * -SinOrientation) + ((MinBound.Y - (WFCModel->TileSize * 0.5f)) * CosOrientation);
+// 	ReorientedMinPoint.Z = MinBound.Z - (WFCModel->TileSize * 0.5f);
+// 	OriginLocation = ReorientedMinPoint + TransformPivot;
+// 	
+// 	// Set WFC Orientation
+// 	Orientation = FRotator(0, TransformOrientation, 0);
+//
+// 	// Set WFC Starter Options
+// 	FIntVector PositionOffset;
+// 	PositionOffset.X = (int32)FMath::RoundHalfFromZero(MinBound.X / WFCModel->TileSize);
+// 	PositionOffset.Y = (int32)FMath::RoundHalfFromZero(MinBound.Y / WFCModel->TileSize);
+// 	PositionOffset.Z = (int32)FMath::RoundHalfFromZero(MinBound.Z / WFCModel->TileSize);
+// 	StarterOptions.Empty();
+// 	for (int32 z = 0;z < Resolution.Z; z++)
+// 	{
+// 		for (int32 y = 0;y < Resolution.Y; y++)
+// 		{
+// 			for (int32 x = 0;x < Resolution.X; x++)
+// 			{
+// 				if (!PointPositions.Contains(FIntVector(x + PositionOffset.X, y + PositionOffset.Y, z + PositionOffset.Z)))
+// 				{
+// 					StarterOptions.Add(FIntVector(x, y, z), FWaveFunctionCollapseOption::EmptyOption);
+// 				}
+// 			}
+// 		}
+// 	}
+// 	for (TPair<FIntVector,FWaveFunctionCollapseOption> StarterOption : StarterOptions)
+// 	{
+// 		UE_LOG(LogTemp, Display, TEXT("StartOption at: %d,%d,%d"), StarterOption.Key.X, StarterOption.Key.Y, StarterOption.Key.Z);
+// 	}
+// }

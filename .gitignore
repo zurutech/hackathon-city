@@ -49,3 +49,13 @@ Session.vim
 
 # Visual Studio
 .vs
+*.DotSettings.user
+
+# Rider
+.idea
+Plugins/Developer/RiderLink
+
+# Unreal Extra
+Saved
+Binaries
+Intermediate

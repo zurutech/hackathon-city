@@ -117,7 +117,7 @@ private:
 	* @param Position Position of border tile
 	* @param TmpInitialOptions Initial options which should contain all possible options
 	*/
-	TArray<FWaveFunctionCollapseOption> GetInnerBorderOptions(FIntVector Position, const TArray<FWaveFunctionCollapseOption>& InitialOptions);
+	//TArray<FWaveFunctionCollapseOption> GetInnerBorderOptions(FIntVector Position, const TArray<FWaveFunctionCollapseOption>& InitialOptions);
 
 	/**
 	* Used in GetBorderOptions to gather invalid options for border tiles that should be removed from the InitialOptions set
@@ -125,13 +125,13 @@ private:
 	* @param InInitialOptions This should be the InitialOptions
 	* @param OutBorderOptionsToRemove Array containing gathered options to remove
 	*/
-	void GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency Adjacency, const TArray<FWaveFunctionCollapseOption>& InitialOptions, TArray<FWaveFunctionCollapseOption>& OutBorderOptionsToRemove);
+	//void GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency Adjacency, const TArray<FWaveFunctionCollapseOption>& InitialOptions, TArray<FWaveFunctionCollapseOption>& OutBorderOptionsToRemove);
 	
 	/**
 	* Checks if a position is an inner border
 	* @param Position
 	*/
-	bool IsPositionInnerBorder(FIntVector Position);
+	//bool IsPositionInnerBorder(FIntVector Position);
 	
 	/**
 	* Used in Observe and Propagate to add adjacent indices to a queue

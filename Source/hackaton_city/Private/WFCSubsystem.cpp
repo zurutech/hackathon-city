@@ -150,31 +150,31 @@ void UWFCSubsystem::InitializeWFC(TArray<FWaveFunctionCollapseTile>& Tiles, TArr
 						}
 					}
 					
-					// Pre-populate with border tiles
-					else if (IsPositionInnerBorder(FIntVector(X, Y, Z))
-						&& (bUseEmptyBorder || WFCModel->Constraints.Contains(FWaveFunctionCollapseOption::BorderOption)))
-					{
-						FWaveFunctionCollapseTile BorderTile;
-						BorderTile.RemainingOptions = GetInnerBorderOptions(FIntVector(X, Y, Z), InitialTile.RemainingOptions);
-						BorderTile.ShannonEntropy = UWaveFunctionCollapseBPLibrary::CalculateShannonEntropy(BorderTile.RemainingOptions, WFCModel);
-						Tiles.Add(BorderTile);
-						RemainingTiles.Add(UWaveFunctionCollapseBPLibrary::PositionAsIndex(FIntVector(X, Y, Z), Resolution));
-
-						// swap lower entropy tile to the beginning of RemainingTiles
-						if (BorderTile.ShannonEntropy < MinEntropy)
-						{
-							RemainingTiles.Swap(0, RemainingTiles.Num() - 1);
-							MinEntropy = BorderTile.ShannonEntropy;
-							SwapIndex = 0;
-						}
-						
-						// else, swap min entropy tile with the previous min entropy index+1
-						else if (BorderTile.ShannonEntropy ==  MinEntropy && BorderTile.ShannonEntropy != InitialTile.ShannonEntropy)
-						{
-							SwapIndex += 1;
-							RemainingTiles.Swap(SwapIndex, RemainingTiles.Num() - 1);
-						}
-					}
+					//// Pre-populate with border tiles
+					//else if (IsPositionInnerBorder(FIntVector(X, Y, Z))
+					//	&& (bUseEmptyBorder || WFCModel->Constraints.Contains(FWaveFunctionCollapseOption::BorderOption)))
+					//{
+					//	FWaveFunctionCollapseTile BorderTile;
+					//	BorderTile.RemainingOptions = GetInnerBorderOptions(FIntVector(X, Y, Z), InitialTile.RemainingOptions);
+					//	BorderTile.ShannonEntropy = UWaveFunctionCollapseBPLibrary::CalculateShannonEntropy(BorderTile.RemainingOptions, WFCModel);
+					//	Tiles.Add(BorderTile);
+					//	RemainingTiles.Add(UWaveFunctionCollapseBPLibrary::PositionAsIndex(FIntVector(X, Y, Z), Resolution));
+					//
+					//	// swap lower entropy tile to the beginning of RemainingTiles
+					//	if (BorderTile.ShannonEntropy < MinEntropy)
+					//	{
+					//		RemainingTiles.Swap(0, RemainingTiles.Num() - 1);
+					//		MinEntropy = BorderTile.ShannonEntropy;
+					//		SwapIndex = 0;
+					//	}
+					//	
+					//	// else, swap min entropy tile with the previous min entropy index+1
+					//	else if (BorderTile.ShannonEntropy ==  MinEntropy && BorderTile.ShannonEntropy != InitialTile.ShannonEntropy)
+					//	{
+					//		SwapIndex += 1;
+					//		RemainingTiles.Swap(SwapIndex, RemainingTiles.Num() - 1);
+					//	}
+					//}
 					
 					// Fill the rest with initial tiles
 					else
@@ -218,95 +218,95 @@ bool UWFCSubsystem::BuildInitialTile(FWaveFunctionCollapseTile& InitialTile)
 	}
 }
 
-TArray<FWaveFunctionCollapseOption> UWFCSubsystem::GetInnerBorderOptions(FIntVector Position, const TArray<FWaveFunctionCollapseOption>& InitialOptions)
-{
-	TArray<FWaveFunctionCollapseOption> InnerBorderOptions;
-	TArray<FWaveFunctionCollapseOption> InnerBorderOptionsToRemove;
-	InnerBorderOptions = InitialOptions;
-	
-	// gather options to remove
-	if (Position.X == 0)
-	{
-		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Front, InnerBorderOptions, InnerBorderOptionsToRemove);
-	}
-	if (Position.X == Resolution.X - 1)
-	{
-		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Back, InnerBorderOptions, InnerBorderOptionsToRemove);
-	}
-	if (Position.Y == 0)
-	{
-		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Right, InnerBorderOptions, InnerBorderOptionsToRemove);
-	}
-	if (Position.Y == Resolution.Y - 1)
-	{
-		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Left, InnerBorderOptions, InnerBorderOptionsToRemove);
-	}
-	if (Position.Z == 0)
-	{
-		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Up, InnerBorderOptions, InnerBorderOptionsToRemove);
-	}
-	if (Position.Z == Resolution.Z - 1)
-	{
-		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Down, InnerBorderOptions, InnerBorderOptionsToRemove);
-	}
-	
-	//remove options
-	if (!InnerBorderOptionsToRemove.IsEmpty())
-	{
-		for (FWaveFunctionCollapseOption& RemoveThisOption : InnerBorderOptionsToRemove)
-		{
-			InnerBorderOptions.RemoveSingleSwap(RemoveThisOption, EAllowShrinking::No);
-		}
-		InnerBorderOptions.Shrink();
-	}
-	
-	return InnerBorderOptions;
-}
+//TArray<FWaveFunctionCollapseOption> UWFCSubsystem::GetInnerBorderOptions(FIntVector Position, const TArray<FWaveFunctionCollapseOption>& InitialOptions)
+//{
+//	TArray<FWaveFunctionCollapseOption> InnerBorderOptions;
+//	TArray<FWaveFunctionCollapseOption> InnerBorderOptionsToRemove;
+//	InnerBorderOptions = InitialOptions;
+//	
+//	// gather options to remove
+//	if (Position.X == 0)
+//	{
+//		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Front, InnerBorderOptions, InnerBorderOptionsToRemove);
+//	}
+//	if (Position.X == Resolution.X - 1)
+//	{
+//		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Back, InnerBorderOptions, InnerBorderOptionsToRemove);
+//	}
+//	if (Position.Y == 0)
+//	{
+//		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Right, InnerBorderOptions, InnerBorderOptionsToRemove);
+//	}
+//	if (Position.Y == Resolution.Y - 1)
+//	{
+//		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Left, InnerBorderOptions, InnerBorderOptionsToRemove);
+//	}
+//	if (Position.Z == 0)
+//	{
+//		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Up, InnerBorderOptions, InnerBorderOptionsToRemove);
+//	}
+//	if (Position.Z == Resolution.Z - 1)
+//	{
+//		GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency::Down, InnerBorderOptions, InnerBorderOptionsToRemove);
+//	}
+//	
+//	//remove options
+//	if (!InnerBorderOptionsToRemove.IsEmpty())
+//	{
+//		for (FWaveFunctionCollapseOption& RemoveThisOption : InnerBorderOptionsToRemove)
+//		{
+//			InnerBorderOptions.RemoveSingleSwap(RemoveThisOption, EAllowShrinking::No);
+//		}
+//		InnerBorderOptions.Shrink();
+//	}
+//	
+//	return InnerBorderOptions;
+//}
 
-void UWFCSubsystem::GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency Adjacency, const TArray<FWaveFunctionCollapseOption>& InitialOptions, TArray<FWaveFunctionCollapseOption>& OutBorderOptionsToRemove)
-{
-	bool bFoundBorderOptions = false;
-	for (const FWaveFunctionCollapseOption& InitialOption : InitialOptions)
-	{
-		// if border option exists in the model, use it
-		if (FWaveFunctionCollapseAdjacencyToOptionsMap* FoundBorderAdjacencyToOptionsMap = WFCModel->Constraints.Find(FWaveFunctionCollapseOption::BorderOption))
-		{
-			if (FWaveFunctionCollapseOptions* FoundBorderOptions = FoundBorderAdjacencyToOptionsMap->AdjacencyToOptionsMap.Find(Adjacency))
-			{
-				if (!FoundBorderOptions->Options.Contains(InitialOption))
-				{
-					OutBorderOptionsToRemove.AddUnique(InitialOption);
-					bFoundBorderOptions = true;
-				}
-			}
-		}
-		
-		// else, if useEmptyBorder, use empty option
-		if (bUseEmptyBorder && !bFoundBorderOptions)
-		{
-			if (FWaveFunctionCollapseAdjacencyToOptionsMap* FoundEmptyAdjacencyToOptionsMap = WFCModel->Constraints.Find(FWaveFunctionCollapseOption::EmptyOption))
-			{
-				if (FWaveFunctionCollapseOptions* FoundEmptyOptions = FoundEmptyAdjacencyToOptionsMap->AdjacencyToOptionsMap.Find(Adjacency))
-				{
-					if (!FoundEmptyOptions->Options.Contains(InitialOption))
-					{
-						OutBorderOptionsToRemove.AddUnique(InitialOption);
-					}
-				}
-			}
-		}
-	}
-}
+//void UWFCSubsystem::GatherInnerBorderOptionsToRemove(EWaveFunctionCollapseAdjacency Adjacency, const TArray<FWaveFunctionCollapseOption>& InitialOptions, TArray<FWaveFunctionCollapseOption>& OutBorderOptionsToRemove)
+//{
+//	bool bFoundBorderOptions = false;
+//	for (const FWaveFunctionCollapseOption& InitialOption : InitialOptions)
+//	{
+//		// if border option exists in the model, use it
+//		if (FWaveFunctionCollapseAdjacencyToOptionsMap* FoundBorderAdjacencyToOptionsMap = WFCModel->Constraints.Find(FWaveFunctionCollapseOption::BorderOption))
+//		{
+//			if (FWaveFunctionCollapseOptions* FoundBorderOptions = FoundBorderAdjacencyToOptionsMap->AdjacencyToOptionsMap.Find(Adjacency))
+//			{
+//				if (!FoundBorderOptions->Options.Contains(InitialOption))
+//				{
+//					OutBorderOptionsToRemove.AddUnique(InitialOption);
+//					bFoundBorderOptions = true;
+//				}
+//			}
+//		}
+//		
+//		// else, if useEmptyBorder, use empty option
+//		if (bUseEmptyBorder && !bFoundBorderOptions)
+//		{
+//			if (FWaveFunctionCollapseAdjacencyToOptionsMap* FoundEmptyAdjacencyToOptionsMap = WFCModel->Constraints.Find(FWaveFunctionCollapseOption::EmptyOption))
+//			{
+//				if (FWaveFunctionCollapseOptions* FoundEmptyOptions = FoundEmptyAdjacencyToOptionsMap->AdjacencyToOptionsMap.Find(Adjacency))
+//				{
+//					if (!FoundEmptyOptions->Options.Contains(InitialOption))
+//					{
+//						OutBorderOptionsToRemove.AddUnique(InitialOption);
+//					}
+//				}
+//			}
+//		}
+//	}
+//}
 
-bool UWFCSubsystem::IsPositionInnerBorder(FIntVector Position)
-{
-	return (Position.X == 0
-		|| Position.Y == 0
-		|| Position.Z == 0
-		|| Position.X == Resolution.X - 1
-		|| Position.Y == Resolution.Y - 1
-		|| Position.Z == Resolution.Z - 1);
-}
+//bool UWFCSubsystem::IsPositionInnerBorder(FIntVector Position)
+//{
+//	return (Position.X == 0
+//		|| Position.Y == 0
+//		|| Position.Z == 0
+//		|| Position.X == Resolution.X - 1
+//		|| Position.Y == Resolution.Y - 1
+//		|| Position.Z == Resolution.Z - 1);
+//}
 
 bool UWFCSubsystem::Observe(TArray<FWaveFunctionCollapseTile>& Tiles, 
 	TArray<int32>& RemainingTiles, 

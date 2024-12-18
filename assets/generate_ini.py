@@ -34,8 +34,11 @@ def generate_config(model_data: ModelData) -> CamelCaseConfigParser:
         constraint_str = constraint_str.rstrip(',') + '\n            )\n        )\n    )'
         constraints_str.append(constraint_str)
     
+    model_data_str = f'(\nConstraints=(\n{",\n".join(constraints_str)}\n)\n)'
+    model_data_str = model_data_str.replace(" ", "").replace("\n", "")
+    
     config['/Script/hackaton_city.HackatonCityDeveloperSettings'] = {
-        'ModelData': f'(\nConstraints=(\n{",\n".join(constraints_str)}\n)\n)'
+        'ModelData': model_data_str
     }
     
     return config

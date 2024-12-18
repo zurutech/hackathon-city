@@ -38,8 +38,9 @@ AActor* UWFCSubsystem::Collapse(int32 TryCount /* = 1 */, int32 RandomSeed /* = 
 	StarterOptions.Empty();
 	for (const auto& [absoluteGridPosition, option] : PlacedTiles)
 	{
-		const FIntVector relativePosition = AbsoluteToRelative(absoluteGridPosition, OriginLocation, WFCModel->TileSize);
-		StarterOptions.Add(relativePosition, option);
+		const FIntVector zeroCenteredTilePosition = AbsoluteToRelative(absoluteGridPosition, OriginLocation, WFCModel->TileSize);
+		const FIntVector zeroStartingTilePosition = zeroCenteredTilePosition + Resolution / 2;
+		StarterOptions.Add(zeroStartingTilePosition, option);
 	}
 	
 	if (!WFCModel)
@@ -635,10 +636,20 @@ AActor* UWFCSubsystem::SpawnActorFromTiles(const TArray<FWaveFunctionCollapseTil
 		UObject* LoadedObject = BaseObject.TryLoad();
 		if (LoadedObject)
 		{
-			FRotator BaseRotator = Tiles[index].RemainingOptions[0].BaseRotator;
-			FVector BaseScale3D = Tiles[index].RemainingOptions[0].BaseScale3D;
-			FVector PositionOffset = FVector(WFCModel->TileSize * 0.5f);
-			FVector TilePosition = (FVector(UWaveFunctionCollapseBPLibrary::IndexAsPosition(index, Resolution)) * WFCModel->TileSize) + PositionOffset;
+			const FRotator BaseRotator = Tiles[index].RemainingOptions[0].BaseRotator;
+			const FVector BaseScale3D = Tiles[index].RemainingOptions[0].BaseScale3D;
+			const FVector PositionOffset = FVector(WFCModel->TileSize * 0.5f);
+			const auto zeroStartTilePosition = UWaveFunctionCollapseBPLibrary::IndexAsPosition(index, Resolution);
+			const auto zeroCenteredTilePosition = zeroStartTilePosition - Resolution / 2;
+			if (!(zeroCenteredTilePosition.X > -Resolution.X / 2 && zeroCenteredTilePosition.X < Resolution.X / 2 &&
+			zeroCenteredTilePosition.Y > -Resolution.Y / 2 && zeroCenteredTilePosition.Y < Resolution.Y / 2 &&
+			zeroCenteredTilePosition.Z > -Resolution.Z / 2 && zeroCenteredTilePosition.Z < Resolution.Z / 2))
+			{
+				continue;
+			}
+			const FIntVector absoluteGridPosition = RelativeToAbsolute(zeroCenteredTilePosition, OriginLocation, WFCModel->TileSize);
+			PlacedTiles.Add(absoluteGridPosition, Tiles[index].RemainingOptions[0]);
+			const FVector TilePosition = (FVector(zeroCenteredTilePosition) * WFCModel->TileSize) + PositionOffset;
 
 			// Static meshes are handled with ISM Components
 			if (UStaticMesh* LoadedStaticMesh = Cast<UStaticMesh>(LoadedObject))
@@ -658,9 +669,6 @@ AActor* UWFCSubsystem::SpawnActorFromTiles(const TArray<FWaveFunctionCollapseTil
 				ISMComponent->AddInstance(FTransform(BaseRotator, OriginLocation + TilePosition, BaseScale3D));
 
 				// Save the tile in the output map
-				const FIntVector relativeGridPosition = UWaveFunctionCollapseBPLibrary::IndexAsPosition(index, Resolution);
-				const FIntVector absoluteGridPosition = RelativeToAbsolute(relativeGridPosition, OriginLocation, WFCModel->TileSize);
-				PlacedTiles.Add(absoluteGridPosition, Tiles[index].RemainingOptions[0]);
 			}
 			// Blueprints are handled with ChildActorComponents
 			else if (UBlueprint* LoadedBlueprint = Cast<UBlueprint>(LoadedObject))

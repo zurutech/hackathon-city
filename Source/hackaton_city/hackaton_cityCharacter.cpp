@@ -82,9 +82,9 @@ void Ahackaton_cityCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
-	//wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(this, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
-	wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(this, TEXT("/WaveFunctionCollapse/Sample_Pipes/WFCM_Sample_Pipes.WFCM_Sample_Pipes"));
-	wfcSubsystem->Resolution = FIntVector(3, 3, 3);
+	wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(this, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
+	//wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(this, TEXT("/WaveFunctionCollapse/Sample_Pipes/WFCM_Sample_Pipes.WFCM_Sample_Pipes"));
+	wfcSubsystem->Resolution = FIntVector(5, 5, 3);
 }
 
 

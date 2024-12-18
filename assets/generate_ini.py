@@ -35,7 +35,7 @@ def generate_config(model_data: ModelData) -> CamelCaseConfigParser:
         constraints_str.append(constraint_str)
     
     model_data_str = f'(\nTileSize=7000.000000,\nConstraints=(\n{",\n".join(constraints_str)}\n)\n)'
-    # model_data_str = model_data_str.replace(" ", "").replace("\n", "")
+    model_data_str = model_data_str.replace(" ", "").replace("\n", "")
 
     base_model_str = "/Game/HackatonCity/DataModel/DS_WFCM_HackatonCity.DS_WFCM_HackatonCity"
     

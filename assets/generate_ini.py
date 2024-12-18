@@ -22,7 +22,7 @@ def generate_config(model_data: ModelData) -> CamelCaseConfigParser:
     # modify the modeldata section
     constraints_str = []
     for constraint in model_data.Constraints:
-        constraint_str = f'    (\n        (\n            BaseObject="{constraint.BaseObject}",\n            BaseRotator=(\n                Pitch={constraint.BaseRotator.Pitch},\n                Yaw={constraint.BaseRotator.Yaw},\n                Roll={constraint.BaseRotator.Roll}\n            ),\n            BaseScale3D=(\n                X={constraint.BaseScale3D.X},\n                Y={constraint.BaseScale3D.Y},\n                Z={constraint.BaseScale3D.Z}\n            )\n        ),\n        (\n            AdjacencyToOptionsMap=('
+        constraint_str = f'    (\n        (\n            BaseObject="{constraint.BaseObject}",\n            BaseRotator=(\n                Pitch={constraint.BaseRotator.Pitch},\n                Yaw={constraint.BaseRotator.Yaw},\n                Roll={constraint.BaseRotator.Roll}\n            ),\n            BaseScale3D=(\n                X={constraint.BaseScale3D.X},\n                Y={constraint.BaseScale3D.Y},\n                Z={constraint.BaseScale3D.Z}\n            ),\n            Weight={constraint.Weight},\n        ),\n        (\n            AdjacencyToOptionsMap=('
         
         for adjacency in constraint.AdjacencyToOptionsMap:
             if adjacency.options:
@@ -34,8 +34,11 @@ def generate_config(model_data: ModelData) -> CamelCaseConfigParser:
         constraint_str = constraint_str.rstrip(',') + '\n            )\n        )\n    )'
         constraints_str.append(constraint_str)
     
+    model_data_str = f'(\nConstraints=(\n{",\n".join(constraints_str)}\n)\n)'
+    model_data_str = model_data_str.replace(" ", "").replace("\n", "")
+    
     config['/Script/hackaton_city.HackatonCityDeveloperSettings'] = {
-        'ModelData': f'(\nConstraints=(\n{",\n".join(constraints_str)}\n)\n)'
+        'ModelData': model_data_str
     }
     
     return config

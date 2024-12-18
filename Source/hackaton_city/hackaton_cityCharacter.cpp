@@ -106,13 +106,13 @@ void Ahackaton_cityCharacter::Look(const FInputActionValue& Value)
 
 }
 
-void Ahackaton_cityCharacter::GenerateCity(const FInputActionValue& Value)
+void Ahackaton_cityCharacter::GenerateCity(const FInputActionValue&)
 {
 	Super::Jump();
 
 	const auto forward = GetActorForwardVector();
 	const auto location = GetActorLocation();
-	const auto cityLocation = location + forward * 100000;
+	const auto cityLocation = location + forward * 1000;
 
 	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
 	UWaveFunctionCollapseModel* wfcModel = LoadObject<UWaveFunctionCollapseModel>(nullptr, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));

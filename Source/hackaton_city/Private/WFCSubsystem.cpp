@@ -623,7 +623,7 @@ AActor* UWFCSubsystem::SpawnActorFromTiles(const TArray<FWaveFunctionCollapseTil
 				}
 				ISMComponent->SetStaticMesh(LoadedStaticMesh);
 				ISMComponent->SetMobility(EComponentMobility::Static);
-				ISMComponent->AddInstance(FTransform(BaseRotator, TilePosition, BaseScale3D));
+				ISMComponent->AddInstance(FTransform(BaseRotator, OriginLocation + TilePosition, BaseScale3D));
 			}
 			// Blueprints are handled with ChildActorComponents
 			else if (UBlueprint* LoadedBlueprint = Cast<UBlueprint>(LoadedObject))

@@ -6,8 +6,8 @@ BASE_PATH = "/Game/HackatonCity/actors/"
 ALL_ANGLES = [0, 90, -90, 180]
 HOR_ANGLES = [0, 180]
 VER_ANGLES = [90, -90]
-# FOUR_WAY_LOT = ["city1.city1", "city5.city5"]
-FOUR_WAY_LOT = ["city1.city1"]
+FOUR_WAY_LOT = ["city1.city1", "city5.city5"]
+# FOUR_WAY_LOT = ["city1.city1"]
 HOR_TWO_WAY_LOT = ["city4.city4", "city6.city6", "city7.city7"]
 VER_TWO_WAY_LOT = ["city2.city2", "city0.city0"]
 

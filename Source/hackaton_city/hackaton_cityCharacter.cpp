@@ -76,6 +76,15 @@ void Ahackaton_cityCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	}
 }
 
+void Ahackaton_cityCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
+	wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(nullptr, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
+	wfcSubsystem->Resolution = FIntVector(2, 2, 2);
+}
+
 
 void Ahackaton_cityCharacter::Move(const FInputActionValue& Value)
 {
@@ -109,16 +118,4 @@ void Ahackaton_cityCharacter::Look(const FInputActionValue& Value)
 void Ahackaton_cityCharacter::GenerateCity(const FInputActionValue&)
 {
 	Super::Jump();
-
-	const auto forward = GetActorForwardVector();
-	const auto location = GetActorLocation();
-	const auto cityLocation = location + forward * 1000;
-
-	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
-	UWaveFunctionCollapseModel* wfcModel = LoadObject<UWaveFunctionCollapseModel>(nullptr, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
-	wfcSubsystem->WFCModel = wfcModel;
-	wfcSubsystem->OriginLocation = cityLocation;
-	wfcSubsystem->Resolution = FIntVector(2, 2, 2);
-	wfcSubsystem->Collapse(10, 0);
-	
 }

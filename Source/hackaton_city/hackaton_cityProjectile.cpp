@@ -3,6 +3,7 @@
 #include "hackaton_cityProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Public/WFCSubsystem.h"
 
 Ahackaton_cityProjectile::Ahackaton_cityProjectile() 
 {
@@ -33,6 +34,10 @@ Ahackaton_cityProjectile::Ahackaton_cityProjectile()
 
 void Ahackaton_cityProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
+	wfcSubsystem->OriginLocation = Hit.Location;
+	wfcSubsystem->Collapse(10, 0);
+	
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{

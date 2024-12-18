@@ -34,14 +34,18 @@ class UHackatonCityDeveloperSettings : public UDeveloperSettings
 	GENERATED_BODY()
 public:
 	UHackatonCityDeveloperSettings(){}
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Speed")
+	float Speed = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Speed")
+	FIntVector WFCResolution = FIntVector(5, 5, 1);
 	
 	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Model")
 	FSoftObjectPath BaseModel;
 
 	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Model")
 	FWFCModelData ModelData;
-
-	
 	
 	void PopulateModel(UWaveFunctionCollapseModel* model) const
 	{

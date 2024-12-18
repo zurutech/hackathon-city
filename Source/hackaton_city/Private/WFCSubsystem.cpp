@@ -673,15 +673,16 @@ AActor* UWFCSubsystem::SpawnActorFromTiles(const TArray<FWaveFunctionCollapseTil
 			// Blueprints are handled with ChildActorComponents
 			else if (UBlueprint* LoadedBlueprint = Cast<UBlueprint>(LoadedObject))
 			{
-				UClass* generatedClass = LoadedBlueprint->GeneratedClass.Get();				
-				// if BP is placeable
+				UClass* generatedClass = LoadedBlueprint->GeneratedClass.Get();
 				if (generatedClass->IsChildOf(AActor::StaticClass()))
 				{
-					UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(UWFCSubsystem::AddNamedInstanceComponent(SpawnedActor, UChildActorComponent::StaticClass(), LoadedObject->GetFName()));
-					ChildActorComponent->SetChildActorClass(generatedClass);
-					ChildActorComponent->SetRelativeLocation(OriginLocation + TilePosition);
-					ChildActorComponent->SetRelativeRotation(BaseRotator);
-					ChildActorComponent->SetRelativeScale3D(BaseScale3D);
+					AActor* tileActor = GetWorld()->SpawnActor<AActor>(generatedClass, OriginLocation + TilePosition, BaseRotator, FActorSpawnParameters{});
+					FActorLabelUtilities::SetActorLabelUnique(tileActor, WFCModel->GetFName().ToString());
+					//UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(UWFCSubsystem::AddNamedInstanceComponent(SpawnedActor, UChildActorComponent::StaticClass(), LoadedObject->GetFName()));
+					//ChildActorComponent->SetChildActorClass(generatedClass);
+					//ChildActorComponent->SetRelativeLocation(OriginLocation + TilePosition);
+					//ChildActorComponent->SetRelativeRotation(BaseRotator);
+					//ChildActorComponent->SetRelativeScale3D(BaseScale3D);
 				}
 			}
 			else

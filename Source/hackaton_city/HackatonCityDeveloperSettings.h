@@ -35,10 +35,10 @@ class UHackatonCityDeveloperSettings : public UDeveloperSettings
 public:
 	UHackatonCityDeveloperSettings(){}
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Speed")
+	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Speed")
 	float Speed = 100.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Speed")
+	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Speed")
 	FIntVector WFCResolution = FIntVector(5, 5, 1);
 	
 	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Model")

@@ -19,6 +19,9 @@ struct FWFCModelData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WaveFunctionCollapse")
+	float TileSize;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WaveFunctionCollapse")
 	TMap<FWaveFunctionCollapseOption, FWaveFunctionCollapseAdjacencyToOptionsMap> Constraints;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WaveFunctionCollapse", meta = (AllowedClasses = "StaticMesh, Blueprint"))
@@ -38,8 +41,11 @@ public:
 	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Model")
 	FWFCModelData ModelData;
 
+	
+	
 	void PopulateModel(UWaveFunctionCollapseModel* model) const
 	{
+		model->TileSize = ModelData.TileSize;
 		model->Constraints = ModelData.Constraints;
 		model->SpawnExclusion = ModelData.SpawnExclusion;
 	}

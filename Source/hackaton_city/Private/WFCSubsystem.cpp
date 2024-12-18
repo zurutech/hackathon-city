@@ -642,14 +642,14 @@ AActor* UWFCSubsystem::SpawnActorFromTiles(const TArray<FWaveFunctionCollapseTil
 			const auto zeroStartTilePosition = UWaveFunctionCollapseBPLibrary::IndexAsPosition(index, Resolution);
 			const auto zeroCenteredTilePosition = zeroStartTilePosition - Resolution / 2;
 			if (!(zeroCenteredTilePosition.X > -Resolution.X / 2 && zeroCenteredTilePosition.X < Resolution.X / 2 &&
-			zeroCenteredTilePosition.Y > -Resolution.Y / 2 && zeroCenteredTilePosition.Y < Resolution.Y / 2 &&
-			zeroCenteredTilePosition.Z > -Resolution.Z / 2 && zeroCenteredTilePosition.Z < Resolution.Z / 2))
+			zeroCenteredTilePosition.Y > -Resolution.Y / 2 && zeroCenteredTilePosition.Y < Resolution.Y / 2))
 			{
 				continue;
 			}
 			const FIntVector absoluteGridPosition = RelativeToAbsolute(zeroCenteredTilePosition, OriginLocation, WFCModel->TileSize);
 			PlacedTiles.Add(absoluteGridPosition, Tiles[index].RemainingOptions[0]);
-			const FVector TilePosition = (FVector(zeroCenteredTilePosition) * WFCModel->TileSize) + PositionOffset;
+			FVector TilePosition = (FVector(zeroCenteredTilePosition) * WFCModel->TileSize) + PositionOffset;
+			TilePosition.Z = 0;
 
 			// Static meshes are handled with ISM Components
 			if (UStaticMesh* LoadedStaticMesh = Cast<UStaticMesh>(LoadedObject))
@@ -673,13 +673,13 @@ AActor* UWFCSubsystem::SpawnActorFromTiles(const TArray<FWaveFunctionCollapseTil
 			// Blueprints are handled with ChildActorComponents
 			else if (UBlueprint* LoadedBlueprint = Cast<UBlueprint>(LoadedObject))
 			{
+				UClass* generatedClass = LoadedBlueprint->GeneratedClass.Get();				
 				// if BP is placeable
-				if (!(LoadedBlueprint->GetClass()->HasAnyClassFlags(CLASS_NotPlaceable | CLASS_Deprecated | CLASS_Abstract))
-					&& LoadedBlueprint->GetClass()->IsChildOf(AActor::StaticClass()))
+				if (generatedClass->IsChildOf(AActor::StaticClass()))
 				{
 					UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(UWFCSubsystem::AddNamedInstanceComponent(SpawnedActor, UChildActorComponent::StaticClass(), LoadedObject->GetFName()));
-					ChildActorComponent->SetChildActorClass(LoadedBlueprint->GetClass());
-					ChildActorComponent->SetRelativeLocation(TilePosition);
+					ChildActorComponent->SetChildActorClass(generatedClass);
+					ChildActorComponent->SetRelativeLocation(OriginLocation + TilePosition);
 					ChildActorComponent->SetRelativeRotation(BaseRotator);
 					ChildActorComponent->SetRelativeScale3D(BaseScale3D);
 				}

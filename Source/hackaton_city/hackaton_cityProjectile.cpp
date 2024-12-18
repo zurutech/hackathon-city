@@ -42,7 +42,7 @@ void Ahackaton_cityProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 	const FVector buildingLocation{
 		FMath::FloorToFloat(Hit.Location.X / tileSize) * tileSize,
 		FMath::FloorToFloat(Hit.Location.Y / tileSize) * tileSize,
-		FMath::FloorToFloat(Hit.Location.Z / tileSize) * tileSize
+		0
 	};
 
 	wfcSubsystem->OriginLocation = buildingLocation;

@@ -28,6 +28,7 @@ class Constraint:
     BaseObject: str
     BaseRotator: Rotator = field(default_factory=Rotator)
     BaseScale3D: Scale3D = field(default_factory=Scale3D)
+    Weight: float = 1.0
     AdjacencyToOptionsMap: list[AdjacencyOption] = field(default_factory=list)
 
 @dataclass

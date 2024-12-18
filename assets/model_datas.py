@@ -17,8 +17,10 @@ def model_data_matrix():
         "Right": [],
         "Left": []
     }))
+    count = 0
     for lot1 in FOUR_WAY_LOT:
         for rot1 in ALL_ANGLES:
+            count += 1
             for lot2 in FOUR_WAY_LOT:
                 for rot2 in ALL_ANGLES:
                     model_dict[lot1][rot1]["Front"].append((lot2, rot2))
@@ -41,6 +43,7 @@ def model_data_matrix():
                     model_dict[lot1][rot1]["Left"].append((lot2, rot2))
     for lot1 in HOR_TWO_WAY_LOT:
         for rot1 in HOR_ANGLES:
+            count += 1
             for lot2 in FOUR_WAY_LOT:
                 for rot2 in ALL_ANGLES:
                     model_dict[lot1][rot1]["Left"].append((lot2, rot2))
@@ -54,6 +57,7 @@ def model_data_matrix():
                     model_dict[lot1][rot1]["Left"].append((lot2, rot2))
                     model_dict[lot1][rot1]["Right"].append((lot2, rot2))
         for rot1 in VER_ANGLES:
+            count += 1
             for lot2 in FOUR_WAY_LOT:
                 for rot2 in ALL_ANGLES:
                     model_dict[lot1][rot1]["Front"].append((lot2, rot2))
@@ -68,6 +72,7 @@ def model_data_matrix():
                     model_dict[lot1][rot1]["Back"].append((lot2, rot2))
     for lot1 in VER_TWO_WAY_LOT:
         for rot1 in HOR_ANGLES:
+            count += 1
             for lot2 in FOUR_WAY_LOT:
                 for rot2 in ALL_ANGLES:
                     model_dict[lot1][rot1]["Front"].append((lot2, rot2))
@@ -81,6 +86,7 @@ def model_data_matrix():
                     model_dict[lot1][rot1]["Front"].append((lot2, rot2))
                     model_dict[lot1][rot1]["Back"].append((lot2, rot2))
         for rot1 in VER_ANGLES:
+            count += 1
             for lot2 in FOUR_WAY_LOT:
                 for rot2 in ALL_ANGLES:
                     model_dict[lot1][rot1]["Left"].append((lot2, rot2))
@@ -94,17 +100,21 @@ def model_data_matrix():
                     model_dict[lot1][rot1]["Left"].append((lot2, rot2))
                     model_dict[lot1][rot1]["Right"].append((lot2, rot2))
     breakpoint()
-    return {
-        key: dict(value)
-        for key, value in model_dict.items()
-    }
+    return (
+        {
+            key: dict(value)
+            for key, value in model_dict.items()
+        },
+        count
+    )
 
-def generate_model_datas(model_dict) -> ModelData:
+def generate_model_datas(model_dict, weight) -> ModelData:
     model_data = ModelData(
         Constraints=[
             Constraint(
                 BaseObject=BASE_PATH + key,
                 BaseRotator=Rotator(Yaw=rotation),
+                Weight=weight,
                 AdjacencyToOptionsMap=[
                     AdjacencyOption(
                         direction=direction,
@@ -123,33 +133,11 @@ def generate_model_datas(model_dict) -> ModelData:
             for rotation, constraints in value.items()
         ]
     )
-    model_data2 = ModelData(
-        Constraints=[
-            Constraint(
-                BaseObject="/Engine/Functions/Engine_MaterialFunctions02/SupportFiles/1x1x1_Box_Pivot_-XYZ.1x1x1_Box_Pivot_-XYZ",
-                BaseRotator=Rotator(Pitch=0.0, Yaw=0.0, Roll=0.0),
-                AdjacencyToOptionsMap=[
-                    AdjacencyOption(direction="Front", options=[Option(BaseObject="/Game/HackatonCity/low_wideA.low_wideA")]),
-                    AdjacencyOption(direction="Back"),
-                    AdjacencyOption(direction="Right"),
-                    AdjacencyOption(direction="Left")
-                ]
-            ),
-            Constraint(
-                BaseObject="/Game/HackatonCity/small_buildingE.small_buildingE",
-                AdjacencyToOptionsMap=[
-                    AdjacencyOption(direction="Front", options=[Option(BaseObject="/Game/HackatonCity/large_buildingF.large_buildingF")]),
-                    AdjacencyOption(direction="Back"),
-                    AdjacencyOption(direction="Right"),
-                    AdjacencyOption(direction="Left")
-                ]
-            )
-        ]
-    )
+    
     return model_data
 
 def get_model_data() -> ModelData:
-    model_dict = model_data_matrix()
+    model_dict, count = model_data_matrix()
     print(model_dict)
-    model_data = generate_model_datas(model_dict=model_dict)
+    model_data = generate_model_datas(model_dict=model_dict, weight=1/count)
     return model_data

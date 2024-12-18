@@ -36,6 +36,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WFCSettings")
 	TMap<FIntVector, FWaveFunctionCollapseOption> StarterOptions;
 
+	// Output field, filled at the end of the Collapse function with the placed tiles and
+	// discrete positions in space, relative to the origin location and depending on the resolution.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WFCSettings")                    
+	TMap<FIntVector, FWaveFunctionCollapseOption> PlacedTiles{};
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WFCSettings")
 	TMap<FVector, AActor*> SpawnedActors{};
 
@@ -98,28 +103,6 @@ public:
 		TArray<int32>& RemainingTiles,
 		TMap<int32, FWaveFunctionCollapseQueueElement>& ObservationQueue,
 		int32 RandomSeed);
-
-	/**
-	* Derive grid from the bounds of an array of transforms
-	* Assumptions:
-	*	-Transforms can only represent a single grid
-	*   -Sets empty starter option if there is a valid grid position with no transform
-	*   -Orientation is determined by the yaw of the first transform in the array
-	* @param Transforms Array of transforms (by ref)
-	*/
-	//UFUNCTION(BlueprintCallable, Category = "WFCFunctions")
-	//void DeriveGridFromTransformBounds(const TArray<FTransform>& Transforms);
-
-	/**
-	* Derive grid from an array of transforms
-	* Assumptions:
-	*   -Every transform represents the center point of a tile position
-	*   -Sets empty starter option if there is a valid grid position with no transform
-	*   -Orientation is determined by the yaw of the first transform in the array
-	* @param Transforms Array of transforms (by ref)
-	*/
-	//UFUNCTION(BlueprintCallable, Category = "WFCFunctions")
-	//void DeriveGridFromTransforms(const TArray<FTransform>& Transforms);
 
 private:
 

@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "WaveFunctionCollapseModel.h"
 #include "Engine/LocalPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Public/WFCSubsystem.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -81,17 +82,21 @@ void Ahackaton_cityCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	auto* wfcSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWFCSubsystem>();
 	
 	//wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(this, TEXT("/WaveFunctionCollapse/Sample_Buildings/WFCM_Sample_Buildings.WFCM_Sample_Buildings"));
 	//wfcSubsystem->WFCModel = LoadObject<UWaveFunctionCollapseModel>(this, TEXT("/WaveFunctionCollapse/Sample_Pipes/WFCM_Sample_Pipes.WFCM_Sample_Pipes"));
-		auto settings{GetDefault<UHackatonCityDeveloperSettings>()};
+	auto settings{GetDefault<UHackatonCityDeveloperSettings>()};
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	MovementComponent->MaxWalkSpeed = settings->Speed;
+	Speed = settings->Speed;
 	wfcSubsystem->WFCModel = Cast<UWaveFunctionCollapseModel>(settings->BaseModel.TryLoad());
 	settings->PopulateModel(wfcSubsystem->WFCModel);
 
 	TMap<FWaveFunctionCollapseOption, FWaveFunctionCollapseAdjacencyToOptionsMap> constraints = wfcSubsystem->WFCModel->Constraints;
 	constraints.Add(FWaveFunctionCollapseOption::EmptyOption, FWaveFunctionCollapseAdjacencyToOptionsMap{});
-	wfcSubsystem->Resolution = FIntVector(5, 5, 1);
+	wfcSubsystem->Resolution = settings->WFCResolution;
 }
 
 
@@ -99,13 +104,12 @@ void Ahackaton_cityCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	constexpr float SPEED = 1000;
 	
 	if (Controller != nullptr)
 	{
 		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y * SPEED);
-		AddMovementInput(GetActorRightVector(), MovementVector.X * SPEED);
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y * Speed);
+		AddMovementInput(GetActorRightVector(), MovementVector.X * Speed);
 	}
 }
 

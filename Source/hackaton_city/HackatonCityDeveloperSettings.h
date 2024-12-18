@@ -31,6 +31,9 @@ class UHackatonCityDeveloperSettings : public UDeveloperSettings
 	GENERATED_BODY()
 public:
 	UHackatonCityDeveloperSettings(){}
+	
+	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Model")
+	FSoftObjectPath BaseModel;
 
 	UPROPERTY(Config, BlueprintReadWrite, EditAnywhere, Category = "Model")
 	FWFCModelData ModelData;
@@ -40,9 +43,5 @@ public:
 		model->Constraints = ModelData.Constraints;
 		model->SpawnExclusion = ModelData.SpawnExclusion;
 	}
-
-	void Serialize(FArchive& Ar) override
-	{
-		Super::Serialize(Ar);
-	}
+	
 };

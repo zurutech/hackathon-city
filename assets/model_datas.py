@@ -22,12 +22,12 @@ def model_data_matrix():
     for lot1 in FOUR_WAY_LOT:
         for rot1 in ALL_ANGLES:
             count += 1
-            for lot2 in FOUR_WAY_LOT:
-                for rot2 in ALL_ANGLES:
-                    model_dict[lot1][rot1]["Front"].append((lot2, rot2))
-                    model_dict[lot1][rot1]["Back"].append((lot2, rot2))
-                    model_dict[lot1][rot1]["Right"].append((lot2, rot2))
-                    model_dict[lot1][rot1]["Left"].append((lot2, rot2))
+            # for lot2 in FOUR_WAY_LOT:
+            #     for rot2 in ALL_ANGLES:
+            #         model_dict[lot1][rot1]["Front"].append((lot2, rot2))
+            #         model_dict[lot1][rot1]["Back"].append((lot2, rot2))
+            #         model_dict[lot1][rot1]["Right"].append((lot2, rot2))
+            #         model_dict[lot1][rot1]["Left"].append((lot2, rot2))
             for lot2 in HOR_TWO_WAY_LOT:
                 for rot2 in HOR_ANGLES:
                     model_dict[lot1][rot1]["Right"].append((lot2, rot2))
